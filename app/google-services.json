@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "275489298111",
+    "project_id": "trakit-f2531",
+    "storage_bucket": "trakit-f2531.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275489298111:android:c3ea2afb4c4505fe0b580a",
+        "android_client_info": {
+          "package_name": "com.mk.trakit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275489298111-6vqm8l101mgj3lff0ivrgirfiu4u7jdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrWbgFln983igcXIS_K0nY7zXkEs1Wtfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275489298111-6vqm8l101mgj3lff0ivrgirfiu4u7jdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
