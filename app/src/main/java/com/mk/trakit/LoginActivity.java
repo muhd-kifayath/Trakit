@@ -48,14 +48,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class LoginActivity extends AppCompatActivity {
 
     EditText email, password;
-    ImageView google_signin;
+    ImageView ggl_login;
     Button login;
     TextView forgot_password, register;
 
     FirebaseAuth mAuth;
     FirebaseDatabase db;
-    GoogleSignInClient mGoogleSignInClient;
-    ProgressDialog progressDialog;
+    GoogleSignInClient gsc;
+    GoogleSignInOptions gso;
 
     int RC_SIGN_IN = 40;
 
@@ -67,21 +67,21 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         login = findViewById(R.id.loginbtn);
         forgot_password = findViewById(R.id.forgot_password);
-        google_signin = findViewById(R.id.google_signin);
+        ggl_login = findViewById(R.id.google_signin);
         register = findViewById(R.id.no_account);
 
         mAuth = FirebaseAuth.getInstance();
 
-        progressDialog = new ProgressDialog(LoginActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setTitle("Creating Account");
         progressDialog.setMessage("Hang in there for a min, creating your account");
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        gsc = GoogleSignIn.getClient(this, gso);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) forgot_password.getLayoutParams();
         params.topMargin = 5;
@@ -146,19 +146,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        google_signin.setOnClickListener(new View.OnClickListener() {
+        ggl_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
+                Intent i = gsc.getSignInIntent();
+                startActivityForResult(i, RC_SIGN_IN);
             }
 
         });
     }
 
     private void signIn(){
-        Intent intent = mGoogleSignInClient.getSignInIntent();
+        Intent intent = gsc.getSignInIntent();
         startActivityForResult(intent,RC_SIGN_IN);
     }
 
@@ -168,13 +167,20 @@ public class LoginActivity extends AppCompatActivity {
 
         if(requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            if (task.isSuccessful()){
+                try {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    String token = account.getIdToken();
+                    firebaseAuth(token);
+                    
 
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+                } catch (ApiException e) {
+                    throw new RuntimeException(e);
+                }
 
-            } catch (ApiException e) {
-                throw new RuntimeException(e);
             }
+
+
         }
     }
 
@@ -186,10 +192,30 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                        if(task.isSuccessful())
+                        {
+                            db = FirebaseDatabase.getInstance();
+                            DatabaseReference reference = db.getReference().child("Users").child(mAuth.getCurrentUser().getUid());
 
+                            reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    Intent intent = new Intent (LoginActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(LoginActivity.this,"Login Failed\n"+e,Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
+                        }
+
+                        else{
+                            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
