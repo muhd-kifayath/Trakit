@@ -14,6 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         />
+
     <TextView
         android:id="@+id/registertext"
         android:layout_width="wrap_content"
@@ -25,6 +26,7 @@
         android:textColor="@color/md_theme_light_surfaceVariant"
         android:textSize="20sp"
         android:textStyle="bold"/>
+
     <LinearLayout
         android:id="@+id/input_box"
         android:layout_width="300sp"
@@ -36,42 +38,74 @@
         android:background="@drawable/highlight_bg"
         android:elevation="10dp"
         android:orientation="vertical">
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="250sp"
-            android:layout_height="45sp"
-            android:layout_marginHorizontal="25sp"
-            android:background="@drawable/edittextbg"
-            android:paddingLeft="15sp"
-            android:hint="Enter Email"
-            android:textColorHint="#ABABAB"
-            android:inputType="textEmailAddress"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
-        />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="250sp"
-            android:layout_height="45sp"
-            android:background="@drawable/edittextbg"
-            android:paddingLeft="15sp"
             android:layout_marginHorizontal="25sp"
-            android:hint="Enter Password"
-            android:textColorHint="#ABABAB"
-            android:inputType="textPassword"
-            android:layout_marginTop="20sp"/>
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:boxBackgroundColor="@color/md_theme_light_onPrimary"
+            android:hint="Email"
+            android:textColorHint="#ABABAB">
 
-        <EditText
-            android:id="@+id/confirm_pass"
-            android:layout_width="250sp"
-            android:layout_height="45sp"
-            android:background="@drawable/edittextbg"
-            android:paddingLeft="15sp"
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="250sp"
+                android:layout_height="45sp"
+                android:paddingLeft="15sp"
+                android:inputType="textEmailAddress"
+                android:layout_marginTop="20sp"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
             android:layout_marginHorizontal="25sp"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:boxBackgroundColor="@color/md_theme_light_onPrimary"
+            android:hint="Password"
+            app:endIconMode="password_toggle"
+            android:textColorHint="#ABABAB">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="250sp"
+                android:layout_height="45sp"
+                android:paddingLeft="15sp"
+                android:inputType="textPassword"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldConfirmPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_marginHorizontal="25sp"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:boxBackgroundColor="@color/md_theme_light_onPrimary"
             android:hint="Confirm Password"
-            android:textColorHint="#ABABAB"
-            android:inputType="textPassword"
-            android:layout_marginTop="20sp"/>
+            app:endIconMode="password_toggle"
+            android:textColorHint="#ABABAB">
+
+            <EditText
+                android:id="@+id/confirm_pass"
+                android:layout_width="250sp"
+                android:layout_height="45sp"
+                android:paddingLeft="15sp"
+                android:inputType="textPassword"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
 
         <Button
             android:id="@+id/registerbtn"
