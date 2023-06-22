@@ -2,6 +2,6 @@
 <resources>
     <item name="nav_view" type="id" />
 
-
     <item name="member2" type="id" />
+
 </resources>

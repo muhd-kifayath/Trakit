@@ -1,9 +1,15 @@
 package com.mk.trakit.ui.rooms;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +38,8 @@ public class RoomsFragment extends Fragment {
     FirebaseDatabase db;
     Button create, addmember;
     TextView cancel;
+    int count;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         RoomsViewModel roomsViewModel =
@@ -41,6 +49,8 @@ public class RoomsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add);
         Dialog dialog = new Dialog(getActivity());
+        final float scale = getResources().getDisplayMetrics().scaledDensity;
+        count = 1;
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,28 +60,54 @@ public class RoomsFragment extends Fragment {
                 dialog.setCancelable(false);
                 dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
+
+                int padding10 = (int) (10 * scale + 0.5f);
+                int padding15 = (int) (15 * scale + 0.5f);
+                int padding50 = (int) (50 * scale + 0.5f);
+
                 create = dialog.findViewById(R.id.create);
                 cancel = dialog.findViewById(R.id.cancel);
 
                 addmember = dialog.findViewById(R.id.addmember);
 
-                RelativeLayout mRlayout = (RelativeLayout) view.findViewById(R.id.create_room_dialog);
+                RelativeLayout mRlayout = (RelativeLayout) dialog.findViewById(R.id.create_room_dialog);
+
                 RelativeLayout.LayoutParams mRparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 addmember.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint({"ResourceAsColor", "ResourceType"})
                     @Override
                     public void onClick(View view) {
-                        TextInputLayout textInputLayout = new TextInputLayout(getContext());
-                        LinearLayout.LayoutParams eParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        count++;
+                        if (count>10){
+                            Toast.makeText(getContext(), "Maximum 10 members",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            RelativeLayout.LayoutParams mRparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            ViewGroup.LayoutParams eParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-                        EditText myEditText = new EditText(getContext());
-                        myEditText.setLayoutParams(eParams);
+                            mRparams.addRule(RelativeLayout.BELOW, R.id.textFieldEmail);
+                            mRparams.setMargins(padding50, padding15+(count-2)*170, padding50,0);
 
-                        textInputLayout.setId(R.id.member2);
-                        mRparams.setMargins(0,20,0,0);
+                            TextInputLayout textInputLayout = new TextInputLayout(getContext());
+                            textInputLayout.setBoxBackgroundColor(R.color.transparent);
+                            textInputLayout.setBoxStrokeColor(R.color.md_theme_light_primary);
 
-                        textInputLayout.addView(myEditText);
-                        textInputLayout.setLayoutParams(mRparams);
-                        mRlayout.addView(textInputLayout);
+                            textInputLayout.setLayoutParams(mRparams);
+                            textInputLayout.setHint("Member " + count);
+                            textInputLayout.setHintTextAppearance(R.color.hint_text);
+
+
+                            EditText myEditText = new EditText(getContext());
+                            myEditText.setLayoutParams(eParams);
+                            myEditText.setBackgroundResource(R.drawable.edittextbg);
+                            myEditText.setPadding(padding15, padding15, padding15, padding15);
+
+
+                            //textInputLayout.setId(R.id.member2+count);
+
+                            textInputLayout.addView(myEditText);
+                            mRlayout.addView(textInputLayout);
+                        }
                     }
                 });
 

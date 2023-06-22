@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/create_room_dialog"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingBottom="20sp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textField"
@@ -20,7 +21,7 @@
         <EditText
             android:id="@+id/room_name"
             android:layout_width="match_parent"
-            android:layout_height="45sp"
+            android:layout_height="wrap_content"
             android:paddingLeft="15sp"
             android:textColorHint="#ABABAB"
             android:inputType="textEmailAddress"
@@ -55,17 +56,17 @@
         android:layout_marginTop="40sp"
         android:layout_marginHorizontal="50sp"
         android:layout_below="@+id/addmember"
-        app:boxStrokeColor="@color/md_theme_light_primary"
-        app:boxBackgroundColor="@color/md_theme_light_primaryContainer"
+
         android:hint="Member 1"
         android:textColorHint="#ABABAB">
 
         <EditText
             android:id="@+id/email"
             android:layout_width="match_parent"
-            android:layout_height="45sp"
+            android:layout_height="wrap_content"
             android:paddingLeft="15sp"
             android:textColorHint="#ABABAB"
+            android:background="@drawable/edittextbg"
             android:inputType="textEmailAddress"
             android:layout_marginTop="20sp"
             />
@@ -79,7 +80,7 @@
         android:text="Create"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20sp"
+        android:layout_marginBottom="30sp"
         android:layout_marginEnd="20sp"/>
 
     <TextView
@@ -88,9 +89,9 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:layout_toLeftOf="@+id/create"
+        android:layout_marginEnd="25sp"
+        android:paddingBottom="15sp"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20sp"
-        android:layout_alignBaseline="@+id/create"
         />
 
 </RelativeLayout>
