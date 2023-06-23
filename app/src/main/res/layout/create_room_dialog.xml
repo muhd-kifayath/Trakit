@@ -1,97 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/create_room_dialog"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:orientation="vertical"
     android:paddingBottom="20sp">
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textField"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50sp"
-        android:layout_marginHorizontal="50sp"
-        android:layout_alignParentTop="true"
-        app:boxStrokeColor="@color/md_theme_light_primary"
-        app:boxBackgroundColor="@color/md_theme_light_primaryContainer"
-        android:hint="Room Name"
-        android:textColorHint="#ABABAB">
-
-        <EditText
-            android:id="@+id/room_name"
+        android:layout_height="500sp">
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50sp"
+                android:layout_marginHorizontal="50sp"
+                android:layout_alignParentTop="true"
+                app:boxStrokeColor="@color/md_theme_light_primary"
+                app:boxBackgroundColor="@color/md_theme_light_primaryContainer"
+                android:hint="Room Name"
+                android:textColorHint="#ABABAB">
+
+                <EditText
+                    android:id="@+id/room_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15sp"
+                    android:textColorHint="#ABABAB"
+                    android:inputType="textEmailAddress"
+                    android:layout_marginTop="20sp"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/addmember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Member"
+                android:layout_below="@+id/textField"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Members"
+                android:layout_below="@+id/addmember"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="50sp"
+                />
+
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:id="@+id/membersRel"
+                    android:layout_marginHorizontal="50sp"
+                    android:layout_below="@+id/addmember"
+
+                    >
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textFieldEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Member 1"
+                        android:textColorHint="#ABABAB">
+
+                        <EditText
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="15sp"
+                            android:textColorHint="#ABABAB"
+                            android:background="@drawable/edittextbg"
+                            android:inputType="textEmailAddress"
+                            android:layout_marginTop="20sp"
+                            />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:layout_gravity="bottom"
+        android:overScrollMode="never"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15sp"
-            android:textColorHint="#ABABAB"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="20sp"
+            android:text="Cancel"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="25sp"
+
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/addmember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Member"
-        android:layout_below="@+id/textField"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20sp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Members"
-        android:layout_below="@+id/addmember"
-        android:layout_marginTop="10sp"
-        android:layout_alignStart="@+id/textFieldEmail"
-        />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textFieldEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40sp"
-        android:layout_marginHorizontal="50sp"
-        android:layout_below="@+id/addmember"
-
-        android:hint="Member 1"
-        android:textColorHint="#ABABAB">
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/create"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15sp"
-            android:textColorHint="#ABABAB"
-            android:background="@drawable/edittextbg"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="20sp"
-            />
+            android:layout_gravity="center_vertical"
+            android:text="Create"
+            android:layout_marginEnd="20sp"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30sp"
-        android:layout_marginEnd="20sp"/>
 
-    <TextView
-        android:id="@+id/cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:layout_toLeftOf="@+id/create"
-        android:layout_marginEnd="25sp"
-        android:paddingBottom="15sp"
-        android:layout_alignParentBottom="true"
-        />
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

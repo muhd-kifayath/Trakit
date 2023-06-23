@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -48,7 +49,7 @@ public class RoomsFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add);
-        Dialog dialog = new Dialog(getActivity());
+        Dialog dialog = new Dialog(getActivity(),R.style.DialogStyle);
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         count = 1;
 
@@ -59,6 +60,7 @@ public class RoomsFragment extends Fragment {
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.setCancelable(false);
                 dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
 
                 int padding10 = (int) (10 * scale + 0.5f);
@@ -70,7 +72,7 @@ public class RoomsFragment extends Fragment {
 
                 addmember = dialog.findViewById(R.id.addmember);
 
-                RelativeLayout mRlayout = (RelativeLayout) dialog.findViewById(R.id.create_room_dialog);
+                RelativeLayout mRlayout = (RelativeLayout) dialog.findViewById(R.id.membersRel);
 
                 RelativeLayout.LayoutParams mRparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 addmember.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +88,7 @@ public class RoomsFragment extends Fragment {
                             ViewGroup.LayoutParams eParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                             mRparams.addRule(RelativeLayout.BELOW, R.id.textFieldEmail);
-                            mRparams.setMargins(padding50, padding15+(count-2)*170, padding50,0);
+                            mRparams.setMargins(0, (count-2)*170, 0,0);
 
                             TextInputLayout textInputLayout = new TextInputLayout(getContext());
                             textInputLayout.setBoxBackgroundColor(R.color.transparent);
@@ -97,11 +99,15 @@ public class RoomsFragment extends Fragment {
                             textInputLayout.setHintTextAppearance(R.color.hint_text);
 
 
+
                             EditText myEditText = new EditText(getContext());
                             myEditText.setLayoutParams(eParams);
                             myEditText.setBackgroundResource(R.drawable.edittextbg);
                             myEditText.setPadding(padding15, padding15, padding15, padding15);
-
+                            myEditText.setMaxLines(1);
+                            myEditText.setTag("member"+count);
+                            myEditText.setInputType(32);
+                            myEditText.setNextFocusDownId(mRlayout.getNextFocusDownId());
 
                             //textInputLayout.setId(R.id.member2+count);
 
@@ -125,6 +131,7 @@ public class RoomsFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        count = 1;
                         Toast.makeText(getActivity(), "Cancel clicked", Toast.LENGTH_SHORT).show();
                     }
                 });
