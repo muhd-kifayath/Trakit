@@ -106,6 +106,7 @@ public class RoomsFragment extends Fragment {
                             myEditText.setPadding(padding15, padding15, padding15, padding15);
                             myEditText.setMaxLines(1);
                             myEditText.setTag("member"+count);
+                            myEditText.setId(200+count);
                             myEditText.setInputType(32);
                             myEditText.setNextFocusDownId(mRlayout.getNextFocusDownId());
 
@@ -121,8 +122,32 @@ public class RoomsFragment extends Fragment {
                 create.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        Toast.makeText(getActivity(), "okay clicked", Toast.LENGTH_SHORT).show();
+                        EditText roomName = dialog.findViewById(R.id.room_name);
+                        EditText[] member = new EditText[count];
+                        member[0] = dialog.findViewById(R.id.email);
+                        for(int i=1;i<count;i++){
+                            member[i] = dialog.findViewById(201+i);
+
+                        }
+                        if(roomName.getText().toString().equals("")){
+                            roomName.setError("Enter com.mk.trakit.Room Name");
+                        }
+                        else{
+                            int n=0;
+                            for(int i=0;i<count;i++){
+                                if(member[i].getText().toString().equals("")){
+                                    member[i].setError("Member email should not be empty!");
+                                }
+                                else{ n++; }
+                            }
+                            if(n==count){
+                                dialog.dismiss();
+                                Toast.makeText(getActivity(), "okay clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+
+
 
                     }
                 });

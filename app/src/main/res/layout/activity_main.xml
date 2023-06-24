@@ -18,7 +18,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="2dp"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/mobile_navigation2"
+        app:navGraph="@navigation/mobile_navigation"
         android:paddingBottom="?attr/actionBarSize"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar

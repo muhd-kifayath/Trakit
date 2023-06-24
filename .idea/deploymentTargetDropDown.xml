@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\ashei\.android\avd\Pixel_3a_API_33_x86_64.avd" />
+            <value value="C:\Users\ashei\.android\avd\Galaxy_S23_Ultr_API_33.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-05-18T17:58:02.810364400Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-06-24T07:28:13.963185700Z" />
   </component>
 </project>
