@@ -144,6 +144,14 @@ public class RoomsFragment extends Fragment {
         return view;
     }
 
+    public boolean checkEmptyText(EditText editText) {
+        String edt = editText.toString();
+        if(edt.equals("")){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
