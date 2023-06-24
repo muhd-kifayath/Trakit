@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +26,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mk.trakit.R;
+import com.mk.trakit.Room;
+import com.mk.trakit.User;
 import com.mk.trakit.databinding.FragmentHomeBinding;
+
+import java.util.UUID;
 
 public class RoomsFragment extends Fragment {
 
@@ -48,6 +59,7 @@ public class RoomsFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
+        db = FirebaseDatabase.getInstance();
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add);
         Dialog dialog = new Dialog(getActivity(),R.style.DialogStyle);
         final float scale = getResources().getDisplayMetrics().scaledDensity;
@@ -104,6 +116,7 @@ public class RoomsFragment extends Fragment {
                             myEditText.setLayoutParams(eParams);
                             myEditText.setBackgroundResource(R.drawable.edittextbg);
                             myEditText.setPadding(padding15, padding15, padding15, padding15);
+                            myEditText.setTextSize(6 * scale + 0.5f);
                             myEditText.setMaxLines(1);
                             myEditText.setTag("member"+count);
                             myEditText.setId(200+count);
@@ -123,32 +136,62 @@ public class RoomsFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         EditText roomName = dialog.findViewById(R.id.room_name);
+                        String room_name = roomName.getText().toString();
                         EditText[] member = new EditText[count];
                         member[0] = dialog.findViewById(R.id.email);
+                        Room room = new Room();
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
 
                         }
-                        if(roomName.getText().toString().equals("")){
-                            roomName.setError("Enter com.mk.trakit.Room Name");
+                        if(TextUtils.isEmpty(room_name)){
+                            roomName.setError("Enter Room Name");
                         }
                         else{
+                            room.setRoom_name(room_name);
                             int n=0;
+                            String[] members = new String[count];
                             for(int i=0;i<count;i++){
-                                if(member[i].getText().toString().equals("")){
+                                if(TextUtils.isEmpty(member[i].getText().toString())){
                                     member[i].setError("Member email should not be empty!");
                                 }
-                                else{ n++; }
+                                else{
+                                    n++;
+                                    members[i]=getUserId(member[i].getText().toString());
+                                }
                             }
                             if(n==count){
-                                dialog.dismiss();
-                                Toast.makeText(getActivity(), "okay clicked", Toast.LENGTH_SHORT).show();
+                                room.setMember(members);
+                                room.setId(UUID.randomUUID().toString());
+                                String rid = room.getId();
+                                DatabaseReference reference = db.getReference().child("Rooms").child(rid);
+                                reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        room.setId(UUID.randomUUID().toString());
+                                        Toast.makeText(getActivity(), "Sorry try again", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                dialog.dismiss();
+                                                Toast.makeText(getActivity(), "Room created successfully",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getActivity(), "Room not created!", Toast.LENGTH_SHORT).show();
+                                                Log.d("Failure", "Failed to create room");
+                                            }
+                                        });
+                                    }
+                                });
+
                             }
                         }
-
-
-
-
                     }
                 });
 
@@ -169,14 +212,28 @@ public class RoomsFragment extends Fragment {
         return view;
     }
 
-    public boolean checkEmptyText(EditText editText) {
-        String edt = editText.toString();
-        if(edt.equals("")){
-            return true;
-        }
-        return false;
-    }
+    public String getUserId(String email){
+        DatabaseReference ref = db.getReference().child("Users");
+        final String[] id = new String[1];
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot data:snapshot.getChildren()){
+                    User user = data.getValue(User.class);
+                    if(user.getEmail().equals(email)) {
+                        id[0] = user.getId();
+                        break;
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return id[0];
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
