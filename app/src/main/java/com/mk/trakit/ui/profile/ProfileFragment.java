@@ -12,6 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
 import com.mk.trakit.databinding.FragmentProfileBinding;
@@ -19,6 +23,7 @@ import com.mk.trakit.databinding.FragmentProfileBinding;
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
+    FirebaseDatabase db;
     Button logout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -29,7 +34,10 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        //DatabaseReference ref = db.getReference().child("Users");
+
         logout = (Button) root.findViewById(R.id.logout);
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,8 +52,6 @@ public class ProfileFragment extends Fragment {
         });
 
         return root;
-
-
 
     }
 

@@ -103,18 +103,17 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
                             reference = db.getReference().child("Users").child(id);
                             String name = currentUser.getDisplayName();
-                            String picUrl = "";
+                            String phoneno = "";
 
                             User user = new User();
                             user.setId(id);
                             user.setNameSurname(name);
                             user.setEmail(email);
-                            user.setPictureUrl(picUrl);
+                            user.setPhoneno(phoneno);
 
                             reference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    //progressbar.dismiss();
                                     Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);

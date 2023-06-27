@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -37,11 +38,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mk.trakit.LoginActivity;
+import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
+import com.mk.trakit.RegisterActivity;
 import com.mk.trakit.Room;
 import com.mk.trakit.User;
 import com.mk.trakit.databinding.FragmentHomeBinding;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class RoomsFragment extends Fragment {
@@ -131,7 +138,6 @@ public class RoomsFragment extends Fragment {
                     }
                 });
 
-
                 create.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -139,6 +145,7 @@ public class RoomsFragment extends Fragment {
                         String room_name = roomName.getText().toString();
                         EditText[] member = new EditText[count];
                         member[0] = dialog.findViewById(R.id.email);
+                        HashMap<Integer, User> members = new HashMap<Integer, User>();
                         Room room = new Room();
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
@@ -150,46 +157,36 @@ public class RoomsFragment extends Fragment {
                         else{
                             room.setRoom_name(room_name);
                             int n=0;
-                            String[] members = new String[count];
                             for(int i=0;i<count;i++){
                                 if(TextUtils.isEmpty(member[i].getText().toString())){
                                     member[i].setError("Member email should not be empty!");
                                 }
                                 else{
                                     n++;
-                                    members[i]=getUserId(member[i].getText().toString());
+                                    members.put(i,getUser(member[i].getText().toString()));
                                 }
                             }
                             if(n==count){
-                                room.setMember(members);
                                 room.setId(UUID.randomUUID().toString());
                                 String rid = room.getId();
                                 DatabaseReference reference = db.getReference().child("Rooms").child(rid);
-                                reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                for (int i=0;i< member.length;i++){
+                                    Log.d("member: "+i,members.get(i).getId());
+                                }
+                                room.setMember(members);
+
+                                reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        room.setId(UUID.randomUUID().toString());
-                                        Toast.makeText(getActivity(), "Sorry try again", Toast.LENGTH_SHORT).show();
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getContext(), "Room created successfully.", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                dialog.dismiss();
-                                                Toast.makeText(getActivity(), "Room created successfully",Toast.LENGTH_SHORT).show();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getActivity(), "Room not created!", Toast.LENGTH_SHORT).show();
-                                                Log.d("Failure", "Failed to create room");
-                                            }
-                                        });
+                                        Toast.makeText(getActivity(),"Posted are Failed\n"+e,Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
                             }
                         }
                     }
@@ -212,27 +209,29 @@ public class RoomsFragment extends Fragment {
         return view;
     }
 
-    public String getUserId(String email){
+    public User getUser(String email){
         DatabaseReference ref = db.getReference().child("Users");
-        final String[] id = new String[1];
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        final User[] newuser = {new User()};
+        ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onSuccess(DataSnapshot snapshot) {
                 for(DataSnapshot data:snapshot.getChildren()){
                     User user = data.getValue(User.class);
                     if(user.getEmail().equals(email)) {
-                        id[0] = user.getId();
+                        newuser[0] = user;
                         break;
                     }
                 }
+
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(),"Couldn't fetch data\n"+e,Toast.LENGTH_SHORT).show();
             }
         });
-        return id[0];
+
+        return newuser[0];
     }
     @Override
     public void onDestroyView() {

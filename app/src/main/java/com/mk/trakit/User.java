@@ -1,17 +1,16 @@
 package com.mk.trakit;
 
 public class User {
-    private String id, nameSurname, email, pictureUrl, type;
+    private String id, nameSurname, email, phoneno;
 
     public User() {
     }
 
-    public User(String id, String nameSurname, String email, String pictureUrl, String type) {
+    public User(String id, String nameSurname, String email, String phoneno) {
         this.id = id;
         this.nameSurname = nameSurname;
         this.email = email;
-        this.pictureUrl = pictureUrl;
-        this.type = type;
+        this.phoneno = phoneno;
     }
 
     public String getId() {
@@ -26,12 +25,8 @@ public class User {
         return email;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
-    }
-
-    public String getType() {
-        return type;
+    public String getPhoneno() {
+        return phoneno;
     }
 
     public void setId(String id) {
@@ -46,11 +41,6 @@ public class User {
         this.email = email;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
+    public void setPhoneno(String phoneno) {this.phoneno = phoneno; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 }
