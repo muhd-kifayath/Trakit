@@ -9,16 +9,16 @@ import java.util.List;
 public class Room {
 
     private String room_name;
-    private HashMap<Integer, User> member;
-    private HashMap<Integer, String> mid;
-    private HashMap<Integer, String> tid;
+    private HashMap<String, User> member;
+    private HashMap<String, String> mid;
+    private HashMap<String, String> tid;
     private HashMap<String, Task> tasks;
     private String id;
 
     public Room() {
     }
 
-    public Room(String id, String room_name, HashMap<Integer, String> mid, HashMap<Integer, User> member, HashMap<String, Task> tasks){
+    public Room(String id, String room_name, HashMap<String, String> mid, HashMap<String, User> member, HashMap<String, Task> tasks){
         this.id = id;
         this.room_name = room_name;
         this.mid = mid;
@@ -42,27 +42,28 @@ public class Room {
         this.room_name = room_name;
     }
 
-    public HashMap<Integer, User> getMember() {
+    public HashMap<String, User> getMember() {
+
         return member;
     }
 
-    public void setMember(HashMap<Integer, User> member) {
+    public void setMember(HashMap<String, User> member) {
         this.member = member;
     }
 
-    public HashMap<Integer, String> getMid() {
+    public HashMap<String, String> getMid() {
         return mid;
     }
 
-    public void setMid(HashMap<Integer, String> mid) {
+    public void setMid(HashMap<String, String> mid) {
         this.mid = mid;
     }
 
-    public HashMap<Integer, String> getTid() {
+    public HashMap<String, String> getTid() {
         return tid;
     }
 
-    public void setTid(HashMap<Integer, String> tid) {
+    public void setTid(HashMap<String, String> tid) {
         this.tid = tid;
     }
 

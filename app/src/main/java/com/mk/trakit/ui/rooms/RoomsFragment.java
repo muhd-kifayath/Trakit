@@ -145,7 +145,7 @@ public class RoomsFragment extends Fragment {
                         String room_name = roomName.getText().toString();
                         EditText[] member = new EditText[count];
                         member[0] = dialog.findViewById(R.id.email);
-                        HashMap<Integer, User> members = new HashMap<Integer, User>();
+                        HashMap<String, Object> members = new HashMap<>();
                         Room room = new Room();
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
@@ -163,21 +163,28 @@ public class RoomsFragment extends Fragment {
                                 }
                                 else{
                                     n++;
-                                    members.put(i,getUser(member[i].getText().toString()));
+                                    String index = String.valueOf(i);
+                                    members.put(index,getUser(member[i].getText().toString()));
                                 }
                             }
                             if(n==count){
                                 room.setId(UUID.randomUUID().toString());
                                 String rid = room.getId();
                                 DatabaseReference reference = db.getReference().child("Rooms").child(rid);
-                                for (int i=0;i< member.length;i++){
-                                    Log.d("member: "+i,members.get(i).getId());
-                                }
-                                room.setMember(members);
+//                                for (int i=0;i< member.length;i++){
+//                                    Log.d("member: "+i,members.get(i).getId());
+//                                }
+
 
                                 reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        reference.child("users").setValue(members).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(getContext(), "Members added!!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                         Toast.makeText(getContext(), "Room created successfully.", Toast.LENGTH_SHORT).show();
                                         dialog.dismiss();
                                     }

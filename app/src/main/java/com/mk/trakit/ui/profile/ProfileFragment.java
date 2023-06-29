@@ -1,12 +1,18 @@
 package com.mk.trakit.ui.profile;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -19,6 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,6 +39,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mk.trakit.ImageHelper;
 import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
@@ -42,7 +53,12 @@ import java.io.InputStream;
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
+
+    private static final int REQUEST_CODE = 9273;
+    private static final String PREF_NAME = "MyAppPrefs";
+    private static final String PERMISSION_PREF_KEY = "StoragePermission";
     FirebaseDatabase db;
+    FirebaseStorage storage;
     TextView name, email, phone;
     Button  logout;
     String uid;
@@ -59,8 +75,8 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
         db = FirebaseDatabase.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        storage = FirebaseStorage.getInstance();
 
-        final User[] user = {new User()};
         name = root.findViewById(R.id.name);
         email = root.findViewById(R.id.email);
         phone = root.findViewById(R.id.phone);
@@ -71,25 +87,27 @@ public class ProfileFragment extends Fragment {
 
         edit_image = root.findViewById(R.id.edit_image_btn);
 
+        if (!hasStoragePermission()) {
+            requestStoragePermission();
+        }
+
+        StorageReference storageReference = storage.getReference();
+
         DatabaseReference ref = db.getReference().child("Users").child(uid);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user[0] = snapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                name.setText(user.getName());
+                email.setText(user.getEmail());
+                phone.setText(user.getPhoneno());
+                if(user.getProfile_pic()!=null) {
+                    setProfilePic(Uri.parse(user.getProfile_pic()));
+                    Toast.makeText(getContext(), "DP not null!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        name.setText(user[0].getName());
-        email.setText(user[0].getEmail());
-        phone.setText(user[0].getPhoneno());
-        if(user[0].getProfile_pic()!=null) {
-            setProfilePic(Uri.parse(user[0].getProfile_pic()));
-            Toast.makeText(getContext(), "DP not null!", Toast.LENGTH_SHORT).show();
-        }
+
         edit_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,6 +220,49 @@ public class ProfileFragment extends Fragment {
         return bitmap;
     }
 
+
+
+    // Method to check if storage permission is granted
+    private boolean hasStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return result;
+    }
+
+    // Method to request storage permission
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+    }
+
+    // Handle the permission request result
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can now access storage
+            } else {
+                // Permission denied, handle accordingly (e.g., show an error message or disable certain functionality)
+            }
+        }
+    }
+
+
+
+
+    // Method to store the permission preference
+    private void storePermissionPreference(boolean granted) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(PERMISSION_PREF_KEY, granted);
+        editor.apply();
+    }
+
+    // Method to check if the permission was previously granted
+    private boolean hasPermissionPreference() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(PERMISSION_PREF_KEY, false);
+    }
 
 
     @Override
