@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +8,19 @@
     android:paddingBottom="100sp">
 
     <!-- TODO: Update blank fragment layout -->
+
+
+    <ImageView
+        android:id="@+id/user_image"
+        android:src="@drawable/profile_icon"
+        android:backgroundTint="#DDDDDD"
+        android:background="@drawable/shape_circle"
+        android:padding="10sp"
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:layout_marginTop="50sp"
+        android:layout_centerHorizontal="true"/>
+
     <ImageButton
         android:id="@+id/edit_image_btn"
         android:layout_width="60sp"
@@ -20,30 +34,153 @@
         android:elevation="10sp"
         android:theme="@style/Theme.MaterialComponents"
         android:background="@drawable/shape_circle" />
-
-    <ImageView
-        android:id="@+id/user_image"
-        android:src="@drawable/profile_icon"
-        android:backgroundTint="#DDDDDD"
-        android:background="@drawable/shape_circle"
-        android:padding="10sp"
-        android:layout_width="150sp"
-        android:layout_height="150sp"
-        android:layout_marginTop="50sp"
-        android:layout_centerHorizontal="true"/>
     
     <LinearLayout
+        android:id="@+id/name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_image"
-        android:layout_marginTop="50sp"
-        android:paddingHorizontal="50sp">
+        android:layout_marginTop="70sp"
+        android:paddingVertical="20sp"
+        android:paddingHorizontal="30sp">
 
 
-        <TextView
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/profile_icon"
+            />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"/>
+            android:layout_marginStart="20sp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name"
+                android:text=""
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end" >
+
+            <ImageView
+                android:id="@+id/name_edit_btn"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:src="@drawable/ic_create"
+                android:layout_gravity="end"
+                app:tint="@color/md_theme_light_primary" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_layout"
+        android:paddingVertical="20sp"
+        android:paddingHorizontal="30sp">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_email"
+            app:tint="#323232" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/email"
+                android:text=""
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phone_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/email_layout"
+        android:paddingVertical="20sp"
+        android:paddingHorizontal="30sp">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_phone"
+            app:tint="#323232" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone No"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/phone"
+                android:text=""
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end" >
+
+            <ImageView
+                android:id="@+id/phone_edit_btn"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:src="@drawable/ic_create"
+                android:layout_gravity="end"
+                app:tint="@color/md_theme_light_primary" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

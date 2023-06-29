@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             User user = new User();
                             user.setId(id);
-                            user.setNameSurname(name);
+                            user.setName(name);
                             user.setEmail(email);
                             user.setPhoneno(phoneno);
 
