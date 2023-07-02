@@ -145,7 +145,6 @@ public class RoomsFragment extends Fragment {
                         String room_name = roomName.getText().toString();
                         EditText[] member = new EditText[count];
                         member[0] = dialog.findViewById(R.id.email);
-                        HashMap<Integer, User> members = new HashMap<Integer, User>();
                         Room room = new Room();
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
@@ -163,7 +162,6 @@ public class RoomsFragment extends Fragment {
                                 }
                                 else{
                                     n++;
-                                    members.put(i,getUser(member[i].getText().toString()));
                                 }
                             }
                             if(n==count){
@@ -171,9 +169,8 @@ public class RoomsFragment extends Fragment {
                                 String rid = room.getId();
                                 DatabaseReference reference = db.getReference().child("Rooms").child(rid);
                                 for (int i=0;i< member.length;i++){
-                                    Log.d("member: "+i,members.get(i).getId());
+
                                 }
-                                room.setMember(members);
 
                                 reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -209,16 +206,23 @@ public class RoomsFragment extends Fragment {
         return view;
     }
 
-    public User getUser(String email){
+    public void setUser(String email, String room_id){
         DatabaseReference ref = db.getReference().child("Users");
-        final User[] newuser = {new User()};
         ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot snapshot) {
                 for(DataSnapshot data:snapshot.getChildren()){
                     User user = data.getValue(User.class);
+
                     if(user.getEmail().equals(email)) {
-                        newuser[0] = user;
+                        String id = user.getId();
+                        user.addRoom(room_id);
+                        ref.child(id).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(getContext(), "Member added to room", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     }
                 }
@@ -231,7 +235,6 @@ public class RoomsFragment extends Fragment {
             }
         });
 
-        return newuser[0];
     }
     @Override
     public void onDestroyView() {

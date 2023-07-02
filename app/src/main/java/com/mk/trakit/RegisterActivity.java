@@ -104,12 +104,14 @@ public class RegisterActivity extends AppCompatActivity {
                             reference = db.getReference().child("Users").child(id);
                             String name = currentUser.getDisplayName();
                             String phoneno = "";
+                            String photourl = "";
 
                             User user = new User();
                             user.setId(id);
                             user.setName(name);
                             user.setEmail(email);
                             user.setPhoneno(phoneno);
+                            user.setProfile_pic(photourl);
 
                             reference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

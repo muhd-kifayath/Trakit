@@ -6,15 +6,19 @@ public class Task {
 
     private String id;
     private String task_name;
+    private String description;
+    private String room_id;
     private DateTime due_date;
     private DateTime time_created;
 
     public Task() {
     }
 
-    public Task(String id, String task_name, DateTime due_date, DateTime time_created){
+    public Task(String id, String task_name, String description, String room_id, DateTime due_date, DateTime time_created){
         this.id = id;
         this.task_name = task_name;
+        this.description = description;
+        this.room_id = room_id;
         this.due_date = due_date;
         this.time_created = time_created;
     }
@@ -33,6 +37,22 @@ public class Task {
 
     public void setTask_name(String task_name) {
         this.task_name = task_name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(String room_id) {
+        this.room_id = room_id;
     }
 
     public DateTime getDue_date() {

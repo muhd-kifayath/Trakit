@@ -1,8 +1,12 @@
 package com.mk.trakit;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String id, name, email, phoneno, profile_pic;
+    private Map<String, Boolean> rooms;
 
     public User() {
     }
@@ -13,6 +17,7 @@ public class User {
         this.email = email;
         this.phoneno = phoneno;
         this.profile_pic = profile_pic;
+        this.rooms = new HashMap<>();
     }
 
     public String getId() {
@@ -53,5 +58,17 @@ public class User {
 
     public void setProfile_pic(String profile_pic) {
         this.profile_pic = profile_pic;
+    }
+
+    public Map<String, Boolean> getRooms() {
+        return rooms;
+    }
+
+    public void addRoom(String roomId) {
+        rooms.put(roomId, true);
+    }
+
+    public void removeRoom(String roomId) {
+        rooms.remove(roomId);
     }
 }
