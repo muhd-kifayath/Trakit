@@ -40,18 +40,16 @@ public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Glide.with(context).load(dataList.get(position).getDataImage()).into(holder.recImage);
-        holder.recTitle.setText(dataList.get(position).getDataTitle());
+        Glide.with(context).load(dataList.get(position).getImage()).into(holder.recImage);
+        holder.recTitle.setText(dataList.get(position).getRoom_name());
 
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("Image", dataList.get(holder.getAdapterPosition()).getDataImage());
-                intent.putExtra("Description", dataList.get(holder.getAdapterPosition()).getDataDesc());
-                intent.putExtra("Title", dataList.get(holder.getAdapterPosition()).getDataTitle());
-                intent.putExtra("Key",dataList.get(holder.getAdapterPosition()).getKey());
+                intent.putExtra("Image", dataList.get(holder.getAdapterPosition()).getImage());
+                intent.putExtra("Title", dataList.get(holder.getAdapterPosition()).getRoom_name());
                 context.startActivity(intent);
             }
         });

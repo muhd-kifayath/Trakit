@@ -11,14 +11,15 @@ public class Room {
     private String room_name;
 
     private String id;
+    private String image;
 
     public Room() {
     }
 
-    public Room(String id, String room_name){
+    public Room(String id, String room_name, String image){
         this.id = id;
         this.room_name = room_name;
-
+        this.image = image;
     }
 
     public String getId() {
@@ -37,4 +38,11 @@ public class Room {
         this.room_name = room_name;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
