@@ -40,10 +40,32 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
+            android:id="@+id/textField2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20sp"
+            android:layout_marginHorizontal="25sp"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:boxBackgroundColor="@color/md_theme_light_onPrimary"
+            android:hint="Name"
+            android:textColorHint="#ABABAB">
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="250sp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15sp"
+                android:inputType="text"
+                android:layout_marginTop="20sp"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
             android:layout_marginHorizontal="25sp"
             app:boxStrokeColor="@color/md_theme_light_primary"
             app:boxBackgroundColor="@color/md_theme_light_onPrimary"
@@ -53,7 +75,7 @@
             <EditText
                 android:id="@+id/email"
                 android:layout_width="250sp"
-                android:layout_height="45sp"
+                android:layout_height="wrap_content"
                 android:paddingLeft="15sp"
                 android:inputType="textEmailAddress"
                 android:layout_marginTop="20sp"
@@ -76,7 +98,7 @@
             <EditText
                 android:id="@+id/password"
                 android:layout_width="250sp"
-                android:layout_height="45sp"
+                android:layout_height="wrap_content"
                 android:paddingLeft="15sp"
                 android:inputType="textPassword"
                 />
@@ -98,7 +120,7 @@
             <EditText
                 android:id="@+id/confirm_pass"
                 android:layout_width="250sp"
-                android:layout_height="45sp"
+                android:layout_height="wrap_content"
                 android:paddingLeft="15sp"
                 android:inputType="textPassword"
                 />

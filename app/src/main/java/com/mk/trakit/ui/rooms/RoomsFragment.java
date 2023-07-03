@@ -169,7 +169,7 @@ public class RoomsFragment extends Fragment {
                                 String rid = room.getId();
                                 DatabaseReference reference = db.getReference().child("Rooms").child(rid);
                                 for (int i=0;i< member.length;i++){
-
+                                    setUser(member[i].getText().toString(),rid);
                                 }
 
                                 reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -216,8 +216,7 @@ public class RoomsFragment extends Fragment {
 
                     if(user.getEmail().equals(email)) {
                         String id = user.getId();
-                        user.addRoom(room_id);
-                        ref.child(id).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        db.getReference().child("RoomMembers").child(room_id).child(id).setValue(false).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(getContext(), "Member added to room", Toast.LENGTH_SHORT).show();

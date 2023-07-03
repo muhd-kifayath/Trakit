@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText mail, password, confirm_pass;
+    EditText user_name, mail, password, confirm_pass;
     Button register;
     TextView login;
     FirebaseAuth auth;
@@ -40,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        user_name = findViewById(R.id.name);
         mail = findViewById(R.id.email);
         password = findViewById(R.id.password);
         confirm_pass = findViewById(R.id.confirm_pass);
@@ -56,10 +57,14 @@ public class RegisterActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //progressBar = new ProgressBar(RegisterActivity.this);
+                String name = user_name.getText().toString();
                 String email = mail.getText().toString();
                 String pass = password.getText().toString();
                 String confirmpass = confirm_pass.getText().toString();
+
+                if(TextUtils.isEmpty(name)){
+                    user_name.setError("Cannot leave Mail ID empty");
+                }
 
                 if(TextUtils.isEmpty(email)){
                     mail.setError("Cannot leave Mail ID empty");
@@ -82,13 +87,13 @@ public class RegisterActivity extends AppCompatActivity {
                     confirm_pass.setError("Passwords do not match!");
                 }
                 else{
-                    addUserToDb(email,pass);
+                    addUserToDb(name,email,pass);
                 }
             }
         });
 
     }
-    private void addUserToDb(final String email, String password){
+    private void addUserToDb(final String name, final String email, String password){
 
         auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -102,7 +107,6 @@ public class RegisterActivity extends AppCompatActivity {
                             String id = currentUser.getUid();
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
                             reference = db.getReference().child("Users").child(id);
-                            String name = currentUser.getDisplayName();
                             String phoneno = "";
                             String photourl = "";
 
