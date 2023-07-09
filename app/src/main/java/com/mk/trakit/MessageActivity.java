@@ -80,7 +80,7 @@ public class MessageActivity extends AppCompatActivity {
         userName = intent.getStringExtra("userName");
         userPictureUrl = intent.getStringExtra("userPictureUrl");
 
-        Glide.with(MessageActivity.this).load(userPictureUrl).into(receiverUserPic);
+        Glide.with(MessageActivity.this).load(userPictureUrl).circleCrop().into(receiverUserPic);
         recieverUserName.setText(userName);
 
         sendMessage.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +134,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 assert user != null;
-                Glide.with(getApplicationContext()).load(user.getProfile_pic()).into(imageProfileChat);
+                Glide.with(getApplicationContext()).load(user.getProfile_pic()).circleCrop().into(imageProfileChat);
             }
 
             @Override

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,16 +16,16 @@
         android:layout_height="wrap_content"
         android:minHeight="70sp">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/user_content_profilePicture"
-            android:src="@drawable/shape_circle"
-            android:tint="@color/md_theme_light_primary"
+            android:background="@drawable/shape_circle"
+            android:backgroundTint="@color/md_theme_light_primary"
             android:layout_marginStart="20dp"
             android:layout_centerVertical="true"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
+            />
 
         <TextView
             android:id="@+id/user_content_username"

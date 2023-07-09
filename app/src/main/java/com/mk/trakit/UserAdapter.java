@@ -43,8 +43,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final User user = userList.get(position);
-        holder.txtUserName.setText(user.getName());
-        Glide.with(mContext).load(user.getProfile_pic()).into(holder.imgProfilePic);
+        if(currentUser.getUid()!=user.getId()) {
+            holder.txtUserName.setText(user.getName());
+            Glide.with(mContext).load(user.getProfile_pic()).circleCrop().into(holder.imgProfilePic);
       /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,21 +56,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 mContext.startActivity(intent);
             }
         });*/
-        holder.btnMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.putExtra("userId",user.getId());
-                intent.putExtra("userName",user.getName());
-                intent.putExtra("userPictureUrl",user.getProfile_pic());
-                mContext.startActivity(intent);
+            holder.btnMessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userId", user.getId());
+                    intent.putExtra("userName", user.getName());
+                    intent.putExtra("userPictureUrl", user.getProfile_pic());
+                    mContext.startActivity(intent);
+                }
+            });
+            if (user.getId().equals(currentUser.getUid())) {
+                holder.btnMessage.setVisibility(View.INVISIBLE);
             }
-        });
-        if(user.getId().equals(currentUser.getUid()))
-        {
-            holder.btnMessage.setVisibility(View.INVISIBLE);
         }
-
 
 
 

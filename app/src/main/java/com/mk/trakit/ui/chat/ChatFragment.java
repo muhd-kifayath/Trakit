@@ -77,7 +77,9 @@ public class ChatFragment extends Fragment {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     User user = snapshot.getValue(User.class);
-                    userList.add(user);
+                    if(user.getId()!= currentUser.getUid()) {
+                        userList.add(user);
+                    }
                 }
                 userAdapter.notifyDataSetChanged();
 

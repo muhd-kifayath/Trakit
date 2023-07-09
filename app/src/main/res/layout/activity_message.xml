@@ -39,18 +39,11 @@
             />
     </LinearLayout>
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/midnight_200"
-        android:layout_below="@+id/linear_chat"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view_chats"
-        android:layout_below="@id/toolbar_line"
         android:layout_above="@id/bottom_relative_chat"
         android:layout_margin="10sp"/>
 
