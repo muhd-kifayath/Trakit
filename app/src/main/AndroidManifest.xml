@@ -12,9 +12,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.trakit"
+        android:windowSoftInputMode="adjustResize"
         tools:targetApi="31">
+        <activity
+            android:name=".MessageActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
