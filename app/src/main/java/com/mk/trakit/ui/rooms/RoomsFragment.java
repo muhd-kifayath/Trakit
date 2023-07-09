@@ -43,6 +43,7 @@ import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
 import com.mk.trakit.RegisterActivity;
 import com.mk.trakit.Room;
+import com.mk.trakit.RoomAdapter;
 import com.mk.trakit.User;
 import com.mk.trakit.databinding.FragmentHomeBinding;
 
@@ -59,6 +60,9 @@ public class RoomsFragment extends Fragment {
     TextView cancel;
     int count;
 
+    List<Room> dataList;
+    RoomAdapter roomAdapter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         RoomsViewModel roomsViewModel =
@@ -71,6 +75,8 @@ public class RoomsFragment extends Fragment {
         Dialog dialog = new Dialog(getActivity(),R.style.DialogStyle);
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         count = 1;
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

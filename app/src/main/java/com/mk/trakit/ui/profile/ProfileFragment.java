@@ -23,6 +23,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -31,7 +36,10 @@ import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mk.trakit.ImageHelper;
 import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
@@ -65,6 +74,7 @@ public class ProfileFragment extends Fragment {
 
     ImageView name_edit, phone_edit, profile_pic;
     ImageButton edit_image;
+    Uri uri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -91,8 +101,6 @@ public class ProfileFragment extends Fragment {
             requestStoragePermission();
         }
 
-        StorageReference storageReference = storage.getReference();
-
         DatabaseReference ref = db.getReference().child("Users").child(uid);
         ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -102,20 +110,58 @@ public class ProfileFragment extends Fragment {
                 email.setText(user.getEmail());
                 phone.setText(user.getPhoneno());
                 if(user.getProfile_pic()!=null) {
-                    setProfilePic(Uri.parse(user.getProfile_pic()));
-                    Toast.makeText(getContext(), "DP not null!", Toast.LENGTH_SHORT).show();
+                    Glide.with(getContext()).load(user.getProfile_pic()).circleCrop().into(profile_pic);
+                    profile_pic.setPadding(0,0,0,0);
                 }
             }
         });
 
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK){
+                            Intent data = result.getData();
+                            uri = data.getData();
+
+
+                            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Profile Pictures")
+                                    .child(uid);
+
+                            storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                    while (!uriTask.isComplete());
+                                    Uri urlImage = uriTask.getResult();
+                                    Glide.with(getContext()).load(urlImage).circleCrop().into(profile_pic);
+                                    setProfilePic(urlImage);
+                                    Toast.makeText(getContext(), "Image uploaded!", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Image not uploaded!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(getContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
         edit_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(openGalleryIntent, 100);
-
+                Intent photoPicker = new Intent(Intent.ACTION_PICK);
+                photoPicker.setType("image/*");
+                activityResultLauncher.launch(photoPicker);
             }
         });
+
 
         name_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +200,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -162,36 +208,40 @@ public class ProfileFragment extends Fragment {
             if(resultCode== Activity.RESULT_OK){
                 Uri dpUri = data.getData();
                 setProfilePic(dpUri);
-                DatabaseReference ref = db.getReference().child("Users").child(uid);
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
-                        user.setProfile_pic(dpUri.toString());
 
-                        ref.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(), "Profile Pic Updated", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
 
             }
         }
-    }
+    }*/
 
     private void setProfilePic(Uri dpUri) {
-        Bitmap bitmap = convertUriToBitmap(dpUri);
+        /*Bitmap bitmap = convertUriToBitmap(dpUri);
         Bitmap circularBitmap = ImageHelper.getRoundedBitmap(bitmap);
         profile_pic.setImageBitmap(circularBitmap);
-        profile_pic.setPadding(0,0,0,0);
+        profile_pic.setPadding(0,0,0,0);*/
+        StorageReference sref = storage.getReference().child("profile-pic").child(uid);
+
+        DatabaseReference ref = db.getReference().child("Users").child(uid);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                user.setProfile_pic(dpUri.toString());
+
+                ref.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getContext(), "Profile Pic Updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public Bitmap convertUriToBitmap(Uri uri) {

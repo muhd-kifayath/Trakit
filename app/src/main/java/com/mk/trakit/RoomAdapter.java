@@ -40,7 +40,6 @@ public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Glide.with(context).load(dataList.get(position).getImage()).into(holder.recImage);
         holder.recTitle.setText(dataList.get(position).getRoom_name());
 
 
@@ -68,14 +67,12 @@ public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
 class MyViewHolder extends RecyclerView.ViewHolder{
 
-    ImageView recImage;
     TextView recTitle;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        recImage = itemView.findViewById(R.id.recImage);
         recCard = itemView.findViewById(R.id.recCard);
         recTitle = itemView.findViewById(R.id.recTitle);
     }
