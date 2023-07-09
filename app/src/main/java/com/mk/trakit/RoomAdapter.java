@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
+public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
     private Context context;
     private Activity activity;
@@ -33,13 +33,13 @@ public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-        return new MyViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.recTitle.setText(dataList.get(position).getRoom_name());
 
 
@@ -63,17 +63,17 @@ public class RoomAdapter extends RecyclerView.Adapter<MyViewHolder> {
         dataList = searchList;
         notifyDataSetChanged();
     }
-}
 
-class MyViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
-    TextView recTitle;
-    CardView recCard;
+        TextView recTitle;
+        CardView recCard;
 
-    public MyViewHolder(@NonNull View itemView) {
-        super(itemView);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-        recCard = itemView.findViewById(R.id.recCard);
-        recTitle = itemView.findViewById(R.id.recTitle);
+            recCard = itemView.findViewById(R.id.recCard);
+            recTitle = itemView.findViewById(R.id.recTitle);
+        }
     }
 }
