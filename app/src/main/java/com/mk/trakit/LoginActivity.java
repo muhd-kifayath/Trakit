@@ -54,10 +54,6 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     FirebaseDatabase db;
-    GoogleSignInClient gsc;
-    GoogleSignInOptions gso;
-
-    int RC_SIGN_IN = 40;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         login = findViewById(R.id.loginbtn);
         forgot_password = findViewById(R.id.forgot_password);
-        ggl_login = findViewById(R.id.google_signin);
         register = findViewById(R.id.no_account);
 
         mAuth = FirebaseAuth.getInstance();
@@ -76,12 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setTitle("Creating Account");
         progressDialog.setMessage("Hang in there for a min, creating your account");
 
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
 
-        gsc = GoogleSignIn.getClient(this, gso);
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) forgot_password.getLayoutParams();
         params.topMargin = 5;
@@ -146,80 +136,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        ggl_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = gsc.getSignInIntent();
-                startActivityForResult(i, RC_SIGN_IN);
-            }
 
-        });
     }
 
-    private void signIn(){
-        Intent intent = gsc.getSignInIntent();
-        startActivityForResult(intent,RC_SIGN_IN);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            if (task.isSuccessful()){
-                try {
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    String token = account.getIdToken();
-                    firebaseAuth(token);
-                    
-
-                } catch (ApiException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-
-        }
-    }
-
-    private void firebaseAuth(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if(task.isSuccessful())
-                        {
-                            db = FirebaseDatabase.getInstance();
-                            DatabaseReference reference = db.getReference().child("Users").child(mAuth.getCurrentUser().getUid());
-
-                            reference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                @Override
-                                public void onSuccess(DataSnapshot dataSnapshot) {
-                                    Intent intent = new Intent (LoginActivity.this, MainActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(LoginActivity.this,"Login Failed\n"+e,Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
-
-                        else{
-                            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }
 
     @Override
     protected void onStart() {
