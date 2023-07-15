@@ -1,6 +1,7 @@
 package com.mk.trakit.ui.chat;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,8 +78,14 @@ public class ChatFragment extends Fragment {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     User user = snapshot.getValue(User.class);
-                    if(user.getId()!= currentUser.getUid()) {
+                    String id = "";
+                    if (user != null) {
+                        id = user.getId();
+                    }
+                    if(!id.equals(currentUser.getUid())){
+                        Log.d("Verify User", id);
                         userList.add(user);
+                        Log.d("Room List", userList.toString());
                     }
                 }
                 userAdapter.notifyDataSetChanged();

@@ -46,17 +46,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         if(currentUser.getUid()!=user.getId()) {
             holder.txtUserName.setText(user.getName());
             Glide.with(mContext).load(user.getProfile_pic()).circleCrop().into(holder.imgProfilePic);
-      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ChatActivity.class);
-                intent.putExtra("userId",user.getId());
-                intent.putExtra("userName",user.getNameSurname());
-                intent.putExtra("userPictureUrl",user.getPictureUrl());
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                intent.putExtra("userId", user.getId());
+                intent.putExtra("userName", user.getName());
+                intent.putExtra("userPictureUrl", user.getProfile_pic());
                 mContext.startActivity(intent);
             }
-        });*/
-            holder.btnMessage.setOnClickListener(new View.OnClickListener() {
+        });
+            /*holder.btnMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, MessageActivity.class);
@@ -68,7 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             });
             if (user.getId().equals(currentUser.getUid())) {
                 holder.btnMessage.setVisibility(View.INVISIBLE);
-            }
+            }*/
         }
 
 
@@ -83,7 +83,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView txtUserName;
         ImageView imgProfilePic;
-        Button btnMessage;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -91,7 +90,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             txtUserName = itemView.findViewById(R.id.user_content_username);
             imgProfilePic = itemView.findViewById(R.id.user_content_profilePicture);
-            btnMessage = itemView.findViewById(R.id.user_content_messageButton);
 
         }
     }
