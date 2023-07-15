@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/create_room_dialog"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -85,8 +86,9 @@
                             android:textColorHint="#ABABAB"
                             android:background="@drawable/edittextbg"
                             android:inputType="textEmailAddress"
+                            android:focusable="false"
                             android:layout_marginTop="20sp"
-                            />
+                            tools:ignore="Deprecated" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

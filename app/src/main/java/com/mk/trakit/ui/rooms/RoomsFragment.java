@@ -100,6 +100,15 @@ public class RoomsFragment extends Fragment {
                 cancel = dialog.findViewById(R.id.cancel);
 
                 addmember = dialog.findViewById(R.id.addmember);
+                String member1Email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                if(member1Email!=null) {
+                    EditText email1 = dialog.findViewById(R.id.email);
+                    email1.setText(member1Email);
+                }
+                else{
+                    EditText email1 = dialog.findViewById(R.id.email);
+                    email1.setFocusable(true);
+                }
 
                 RelativeLayout mRlayout = (RelativeLayout) dialog.findViewById(R.id.membersRel);
 
