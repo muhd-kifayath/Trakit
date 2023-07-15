@@ -71,15 +71,12 @@ public class ProfileFragment extends Fragment {
     TextView name, email, phone;
     Button  logout;
     String uid;
-
     ImageView name_edit, phone_edit, profile_pic;
     ImageButton edit_image;
     Uri uri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ProfileViewModel profileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -180,9 +177,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
         logout = (Button) root.findViewById(R.id.logout);
-
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

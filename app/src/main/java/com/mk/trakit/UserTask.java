@@ -2,24 +2,24 @@ package com.mk.trakit;
 
 public class UserTask {
 
-    private String uid;
+    private String id;
 
     private boolean status;
 
     public UserTask() {
     }
 
-    public UserTask(String uid, Boolean status){
-        this.uid = uid;
+    public UserTask(String id, Boolean status){
+        this.id = id;
         this.status = status;
     }
 
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean isStatus() {

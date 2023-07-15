@@ -1,14 +1,7 @@
 package com.mk.trakit.ui.rooms;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,39 +19,42 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mk.trakit.LoginActivity;
-import com.mk.trakit.MainActivity;
 import com.mk.trakit.R;
-import com.mk.trakit.RegisterActivity;
 import com.mk.trakit.Room;
 import com.mk.trakit.RoomAdapter;
 import com.mk.trakit.User;
-import com.mk.trakit.databinding.FragmentHomeBinding;
+import com.mk.trakit.UserTask;
+import com.mk.trakit.databinding.FragmentRoomsBinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class RoomsFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentRoomsBinding binding;
     FirebaseDatabase db;
     Button create, addmember;
     TextView cancel;
+    private RecyclerView recyclerView;
+    private List<Room> roomList;
     int count;
+    FirebaseUser currentUser;
+
 
     List<Room> dataList;
     RoomAdapter roomAdapter;
@@ -68,14 +64,22 @@ public class RoomsFragment extends Fragment {
         RoomsViewModel roomsViewModel =
                 new ViewModelProvider(this).get(RoomsViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentRoomsBinding.inflate(inflater, container, false);
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
         db = FirebaseDatabase.getInstance();
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add);
         Dialog dialog = new Dialog(getActivity(),R.style.DialogStyle);
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         count = 1;
+        recyclerView = view.findViewById(R.id.room_list);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        roomList = new ArrayList<>();
+        roomAdapter= new RoomAdapter(getContext(),roomList);
+        recyclerView.setAdapter(roomAdapter);
+        allRoomRead();
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +158,6 @@ public class RoomsFragment extends Fragment {
                         Room room = new Room();
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
-
                         }
                         if(TextUtils.isEmpty(room_name)){
                             roomName.setError("Enter Room Name");
@@ -212,6 +215,52 @@ public class RoomsFragment extends Fragment {
         return view;
     }
 
+    private void allRoomRead()
+    {
+        DatabaseReference roomRef = FirebaseDatabase.getInstance().getReference("Rooms");
+        DatabaseReference memberRef = FirebaseDatabase.getInstance().getReference("RoomMembers");
+        roomRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // if(searchTxtUserArea.getText().toString().equals(""))
+
+                roomList.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Room room = snapshot.getValue(Room.class);
+
+                    memberRef.child(room.getId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot1) {
+                            for(DataSnapshot data:dataSnapshot1.getChildren()){
+                                UserTask userTask = data.getValue(UserTask.class);
+                                String id = "";
+                                if (userTask != null) {
+                                    id = userTask.getId();
+                                }
+                                if(id.equals(currentUser.getUid())){
+                                    Log.d("Verify User", id);
+                                    roomList.add(room);
+                                    Log.d("Room List", roomList.toString());
+                                    roomAdapter.notifyDataSetChanged();
+                                    break;
+                                }
+
+                            }
+                        }
+                    });
+
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void setUser(String email, String room_id){
         DatabaseReference ref = db.getReference().child("Users");
         ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -222,7 +271,9 @@ public class RoomsFragment extends Fragment {
 
                     if(user.getEmail().equals(email)) {
                         String id = user.getId();
-                        db.getReference().child("RoomMembers").child(room_id).child(id).setValue(false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        UserTask userTask = new UserTask(id, true);
+                        DatabaseReference utReference = db.getReference().child("RoomMembers").child(room_id).child(id);
+                        utReference.setValue(userTask).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(getContext(), "Member added to room", Toast.LENGTH_SHORT).show();

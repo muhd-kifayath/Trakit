@@ -52,7 +52,7 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view_searchUser);
+        recyclerView = root.findViewById(R.id.recycler_view_searchUser);
         // searchTxtUserArea = (EditText) findViewById(R.id.search_text_area);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         recyclerView.setHasFixedSize(true);

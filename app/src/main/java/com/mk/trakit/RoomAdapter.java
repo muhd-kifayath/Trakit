@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
     private Context context;
-    private Activity activity;
     private List<Room> dataList;
 
     public RoomAdapter(Context context, List<Room> dataList) {
@@ -33,9 +32,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RoomAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-        return new ViewHolder(view);
+        return new RoomAdapter.ViewHolder(view);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         holder.recTitle.setText(dataList.get(position).getRoom_name());
 
 
-        holder.recCard.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, MainActivity.class);
@@ -67,12 +66,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView recTitle;
-        CardView recCard;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            recCard = itemView.findViewById(R.id.recCard);
             recTitle = itemView.findViewById(R.id.recTitle);
         }
     }
