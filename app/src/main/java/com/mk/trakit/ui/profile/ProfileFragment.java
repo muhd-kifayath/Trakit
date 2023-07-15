@@ -4,6 +4,7 @@ import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,12 +71,13 @@ public class ProfileFragment extends Fragment {
     private static final String PERMISSION_PREF_KEY = "StoragePermission";
     FirebaseDatabase db;
     FirebaseStorage storage;
-    TextView name, email, phone;
-    Button  logout;
+    TextView name, email, phone, cancel;
+    Button  logout, update;
     String uid;
     ImageView name_edit, phone_edit, profile_pic;
     ImageButton edit_image;
     Uri uri;
+    Dialog dialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -165,14 +169,61 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder name_change_dialog = new AlertDialog.Builder(view.getContext());
                 name_change_dialog.setTitle("Change Name");
-                name_change_dialog.setMessage("Enter Name: ");
-                //name_change_dialog.setPositiveButton()
+
+                View dialog_view = getLayoutInflater().inflate(R.layout.name_change_dialog, null);
+                TextInputEditText nameChange = dialog_view.findViewById(R.id.name);
+                update = dialog_view.findViewById(R.id.update);
+                cancel = dialog_view.findViewById(R.id.cancel);
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        nameUpdate(nameChange.getText().toString());
+                        name.setText(nameChange.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                name_change_dialog.setView(dialog_view);
+                dialog = name_change_dialog.create();
+                dialog.setCancelable(false);
+                dialog.show();
             }
         });
 
         phone_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlertDialog.Builder phoneno_change_dialog = new AlertDialog.Builder(view.getContext());
+                phoneno_change_dialog.setTitle("Change Phone No");
+
+                View dialog_view = getLayoutInflater().inflate(R.layout.phoneno_change_dialog, null);
+                TextInputEditText phonenoChange = dialog_view.findViewById(R.id.phonenumber);
+                update = dialog_view.findViewById(R.id.update);
+                cancel = dialog_view.findViewById(R.id.cancel);
+
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        phonenoUpdate(phonenoChange.getText().toString());
+                        phone.setText(phonenoChange.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                phoneno_change_dialog.setView(dialog_view);
+                dialog = phoneno_change_dialog.create();
+                dialog.setCancelable(false);
+                dialog.show();
 
             }
         });
@@ -192,7 +243,6 @@ public class ProfileFragment extends Fragment {
         });
 
         return root;
-
     }
 
     /*@Override
@@ -209,6 +259,54 @@ public class ProfileFragment extends Fragment {
             }
         }
     }*/
+
+    private void nameUpdate(String name){
+        DatabaseReference ref = db.getReference().child("Users").child(uid);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                user.setName(name);
+
+                ref.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getContext(), "Name updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void phonenoUpdate(String phoneno){
+        DatabaseReference ref = db.getReference().child("Users").child(uid);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                user.setPhoneno(phoneno);
+
+                ref.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getContext(), "Phone No updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
 
     private void setProfilePic(Uri dpUri) {
         /*Bitmap bitmap = convertUriToBitmap(dpUri);
