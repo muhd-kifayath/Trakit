@@ -45,7 +45,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, MainActivity.class);
+                Intent intent = new Intent(context, ToDoActivity.class);
                 intent.putExtra("Image", dataList.get(holder.getAdapterPosition()).getImage());
                 intent.putExtra("Title", dataList.get(holder.getAdapterPosition()).getRoom_name());
                 context.startActivity(intent);

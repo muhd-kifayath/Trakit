@@ -26,15 +26,14 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="0dp"
+        android:elevation="10dp"
         app:elevation="0sp"
         android:layout_marginEnd="20dp"
         android:src="@drawable/round_add"
-        android:backgroundTint="@color/md_theme_light_primary"
+        android:tint="@color/md_theme_light_onPrimary"
         tools:ignore="SpeakableTextPresentCheck"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:theme="@style/Theme.MaterialComponents"
         android:gravity="bottom"
         />
 
