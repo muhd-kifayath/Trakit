@@ -16,11 +16,20 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Room"
+                android:gravity="center"
+                android:layout_marginTop="24sp"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50sp"
+                android:layout_marginTop="30sp"
                 android:layout_marginHorizontal="50sp"
                 android:layout_alignParentTop="true"
                 app:boxStrokeColor="@color/md_theme_light_primary"

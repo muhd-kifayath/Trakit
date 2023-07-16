@@ -212,7 +212,7 @@ public class RoomsFragment extends Fragment {
                     public void onClick(View v) {
                         dialog.dismiss();
                         count = 1;
-                        Toast.makeText(getActivity(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Cancelled!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
