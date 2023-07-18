@@ -28,11 +28,6 @@ public class TaskActions extends ItemTouchHelper.SimpleCallback {
         return false;
     }
 
-    @Override
-    public void setDefaultSwipeDirs(int defaultSwipeDirs) {
-        super.setDefaultSwipeDirs(defaultSwipeDirs);
-        defaultSwipeDirs = ItemTouchHelper.LEFT;
-    }
 
     @Override
     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
