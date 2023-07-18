@@ -43,12 +43,13 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/titlebar">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/pendingText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15sp"
@@ -60,12 +61,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10sp"
+                android:layout_below="@id/pendingText"
                 android:layout_marginTop="15sp"
                 android:layout_marginBottom="10sp" />
 
             <TextView
+                android:id="@+id/completedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/pending_tasks"
                 android:layout_marginTop="15sp"
                 android:layout_marginStart="15sp"
                 android:text="Completed"
@@ -75,11 +79,12 @@
                 android:id="@+id/completed_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/completedText"
                 android:layout_marginHorizontal="10sp"
                 android:layout_marginTop="15sp"
                 android:layout_marginBottom="10sp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </ScrollView>
