@@ -3,6 +3,7 @@ package com.mk.trakit;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -90,6 +91,15 @@ public class ToDoActivity extends AppCompatActivity {
         pendingTasks.setAdapter(pendingTaskAdapter);
         completedTasks.setAdapter(completedTaskAdapter);
 
+        ItemTouchHelper itemTouchHelperPending = new
+                ItemTouchHelper(new TaskActions(pendingTaskAdapter));
+        itemTouchHelperPending.attachToRecyclerView(pendingTasks);
+
+        ItemTouchHelper itemTouchHelperCompleted = new
+                ItemTouchHelper(new TaskCompletedActions(completedTaskAdapter));
+        itemTouchHelperCompleted.attachToRecyclerView(completedTasks);
+
+
         uid = FirebaseAuth.getInstance().getUid();
 
         Dialog dialog = new Dialog(ToDoActivity.this,R.style.DialogStyle);
@@ -126,7 +136,7 @@ public class ToDoActivity extends AppCompatActivity {
                         DatePickerDialog datePickerDialog=new DatePickerDialog(dialog.getContext(),R.style.DateTimeDialogTheme,onDateSetListener,calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
                         datePickerDialog.setTitle("Pick Due Date");
-                        //datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()+86400000);
+                        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()+86400000);
 
                         datePickerDialog.show();
 
@@ -139,20 +149,26 @@ public class ToDoActivity extends AppCompatActivity {
                 create.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         String task_name = taskName.getText().toString();
                         String due_date = duedate.getText().toString();
                         String desc = description.getText().toString();
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+                        if(task_name.equals("")){
+                            taskName.setError("Task Name cannot be empty!");
+                        }
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
                         Calendar calendar = Calendar.getInstance();
                         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+0530"));
                         String time_created = dateFormat.format(calendar.getTime());
 
                         String tid =  UUID.randomUUID().toString();
 
+
                         Task task = new Task(tid, task_name, desc, rid, due_date, time_created, uid);
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Tasks").child(tid);
+                        DatabaseReference reference = DatabaseHelper.getTasks().child(tid);
 
                         reference.setValue(task).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -160,7 +176,7 @@ public class ToDoActivity extends AppCompatActivity {
                                 Toast.makeText(ToDoActivity.this, "Task Created!", Toast.LENGTH_SHORT).show();
                                 initializeTaskStatus(rid, tid);
 
-                                readTasks();
+                                refresh();
                                 dialog.dismiss();
                             }
                         });
@@ -210,7 +226,6 @@ public class ToDoActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tasks");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("TaskAssignments");
 
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -221,37 +236,39 @@ public class ToDoActivity extends AppCompatActivity {
                     Task task = dataSnapshot.getValue(Task.class);
 
                     String tid = task.getId();
+                    String roomId = task.getRoom_id();
 
-                    //pendingList.add(task);
-                    ref.child(tid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @SuppressLint("NotifyDataSetChanged")
-                        @Override
-                        public void onSuccess(DataSnapshot data) {
-                            for(DataSnapshot snap: data.getChildren()){
-                                UserTask userTask = snap.getValue(UserTask.class);
+                    if(roomId.equals(rid)){
+                        ref.child(tid).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @SuppressLint("NotifyDataSetChanged")
+                            @Override
+                            public void onSuccess(DataSnapshot data) {
+                                for(DataSnapshot snap: data.getChildren()){
+                                    UserTask userTask = snap.getValue(UserTask.class);
 
-                                if(userTask.getId().equals(uid)){
-                                    if(userTask.isStatus()){
-                                        Log.d("task verified", "completed");
-                                        completedList.add(task);
-                                        Log.d("Completed List", completedList.toString());
+                                    if(userTask.getId().equals(uid)){
+                                        if(userTask.isStatus()){
+                                            Log.d("task verified", "completed");
+                                            completedList.add(task);
+                                            Log.d("Completed List", completedList.toString());
 
-                                        completedTaskAdapter.notifyDataSetChanged();
+                                            completedTaskAdapter.notifyDataSetChanged();
+                                        }
+                                        else {
+                                            Log.d("task verified", "pending");
+                                            pendingList.add(task);
+                                            Log.d("Pending List", pendingList.toString());
+                                            pendingTaskAdapter.notifyDataSetChanged();
+
+                                        }
+                                        break;
                                     }
-                                    else {
-                                        Log.d("task verified", "pending");
-                                        pendingList.add(task);
-                                        Log.d("Pending List", pendingList.toString());
-                                        pendingTaskAdapter.notifyDataSetChanged();
-
-                                    }
-                                    break;
                                 }
+
                             }
 
-                        }
-
-                    });
+                        });
+                    }
                 }
             }
 
@@ -260,6 +277,14 @@ public class ToDoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        pendingTaskAdapter.notifyDataSetChanged();
+        completedTaskAdapter.notifyDataSetChanged();
     }
 
     public void refresh(){

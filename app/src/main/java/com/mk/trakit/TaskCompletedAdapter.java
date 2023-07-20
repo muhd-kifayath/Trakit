@@ -2,6 +2,7 @@ package com.mk.trakit;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ import java.util.List;
 public class TaskCompletedAdapter extends RecyclerView.Adapter<TaskCompletedAdapter.ViewHolder> {
 
     private Context context;
-    private List<Task> taskList;
+    public List<Task> taskList;
 
 
     public TaskCompletedAdapter(Context mContext, List<Task> taskList) {
@@ -83,7 +84,16 @@ public class TaskCompletedAdapter extends RecyclerView.Adapter<TaskCompletedAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Task Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, TaskActivity.class);
+                intent.putExtra("Name", taskList.get(holder.getAdapterPosition()).getTask_name());
+                intent.putExtra("Description", taskList.get(holder.getAdapterPosition()).getDescription());
+                intent.putExtra("Id", taskList.get(holder.getAdapterPosition()).getId());
+                intent.putExtra("Due Date", taskList.get(holder.getPosition()).getDue_date());
+                intent.putExtra("Time Created", taskList.get(holder.getPosition()).getTime_created());
+                intent.putExtra("Room Id", taskList.get(holder.getPosition()).getRoom_id());
+                intent.putExtra("User Id", taskList.get(holder.getPosition()).getUser_id());
+                intent.putExtra("Completed", true);
+                context.startActivity(intent);
             }
         });
     }
@@ -98,10 +108,27 @@ public class TaskCompletedAdapter extends RecyclerView.Adapter<TaskCompletedAdap
         notifyDataSetChanged();
     }
 
+    public void editItem(int position) {
+        Task item = taskList.get(position);
+
+        Intent intent = new Intent(context, TaskActivity.class);
+        intent.putExtra("Name", taskList.get(position).getTask_name());
+        intent.putExtra("Description", taskList.get(position).getDescription());
+        intent.putExtra("Id", taskList.get(position).getId());
+        intent.putExtra("Due Date", taskList.get(position).getDue_date());
+        intent.putExtra("Time Created", taskList.get(position).getTime_created());
+        intent.putExtra("Room Id", taskList.get(position).getRoom_id());
+        intent.putExtra("User Id", taskList.get(position).getUser_id());
+        intent.putExtra("Completed", false);
+        context.startActivity(intent);
+
+    }
+
     public void deleteItem(int position) {
         Task item = taskList.get(position);
         taskList.remove(position);
         notifyItemRemoved(position);
+
     }
 
     public Context getContext() {

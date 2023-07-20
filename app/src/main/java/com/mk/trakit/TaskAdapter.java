@@ -1,8 +1,12 @@
 package com.mk.trakit;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +36,7 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private Context context;
-    private List<Task> taskList;
+    public List<Task> taskList;
 
 
     public TaskAdapter(Context mContext, List<Task> taskList) {
@@ -81,6 +88,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(context, TaskActivity.class);
+                intent.putExtra("Name", taskList.get(holder.getAdapterPosition()).getTask_name());
+                intent.putExtra("Description", taskList.get(holder.getAdapterPosition()).getDescription());
+                intent.putExtra("Id", taskList.get(holder.getAdapterPosition()).getId());
+                intent.putExtra("Due Date", taskList.get(holder.getPosition()).getDue_date());
+                intent.putExtra("Time Created", taskList.get(holder.getPosition()).getTime_created());
+                intent.putExtra("Room Id", taskList.get(holder.getPosition()).getRoom_id());
+                intent.putExtra("User Id", taskList.get(holder.getPosition()).getUser_id());
+                intent.putExtra("Completed", false);
+                context.startActivity(intent);
                 Toast.makeText(context, "Task Clicked", Toast.LENGTH_SHORT).show();
             }
         });
@@ -96,10 +113,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void editItem(int position) {
+        Task item = taskList.get(position);
+
+        Intent intent = new Intent(context, TaskActivity.class);
+        intent.putExtra("Name", taskList.get(position).getTask_name());
+        intent.putExtra("Description", taskList.get(position).getDescription());
+        intent.putExtra("Id", taskList.get(position).getId());
+        intent.putExtra("Due Date", taskList.get(position).getDue_date());
+        intent.putExtra("Time Created", taskList.get(position).getTime_created());
+        intent.putExtra("Room Id", taskList.get(position).getRoom_id());
+        intent.putExtra("User Id", taskList.get(position).getUser_id());
+        intent.putExtra("Completed", false);
+        context.startActivity(intent);
+
+    }
+
     public void deleteItem(int position) {
         Task item = taskList.get(position);
         taskList.remove(position);
         notifyItemRemoved(position);
+
     }
 
     public Context getContext() {

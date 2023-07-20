@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,13 +10,45 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top">
+        android:layout_gravity="top"
+        android:background="#fafafa">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchbox"
+            android:layout_marginTop="15sp"
+            android:layout_marginHorizontal="20sp"
+            android:paddingVertical="20sp"
+            android:background="@drawable/shape_circle"
+            android:weightSum="2"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_icon"
+                android:backgroundTint="@color/md_theme_light_primaryContainer"
+                android:layout_marginStart="20sp"
+                />
+
+            <EditText
+                android:id="@+id/due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:hint="Search"
+                android:textSize="16sp"
+                android:background="@color/transparent"
+                android:paddingStart="20sp"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-
             android:id="@+id/recycler_view_searchUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/searchbox"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:overScrollMode="never"

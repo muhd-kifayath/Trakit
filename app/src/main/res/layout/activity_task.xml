@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TaskActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titlebar">
+        <CheckBox
+            android:id="@+id/todoCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:layout_gravity="center_vertical"
+            />
+
+        <EditText
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:minHeight="60sp"
+            android:inputType="text"
+            android:text="Task Name"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:background="@color/transparent"
+            android:textColorHint="#ABABAB" />
+
+    </LinearLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titlebar">
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dividerColor="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/duedatebox"
+            android:layout_marginTop="20sp"
+            android:paddingVertical="20sp"
+            >
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calendar"
+                android:background="@color/transparent"
+                android:layout_marginStart="20sp"
+                android:scaleX="1.1"
+                android:scaleY="1.1"
+                />
+
+            <TextView
+                android:id="@+id/due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Due Date"
+                android:textSize="16sp"
+                android:paddingStart="20sp"/>
+
+        </LinearLayout>
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dividerColor="@android:color/darker_gray"
+            android:layout_below="@+id/duedatebox"/>
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/duedatebox"
+            android:background="@color/transparent"
+            android:hint="Description"
+            android:minLines="2"
+            android:paddingVertical="20sp"
+            android:paddingHorizontal="23sp"/>
+
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:minHeight="50sp"
+        android:id="@+id/bottombar"
+        android:weightSum="10">
+
+        <ImageButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            android:backgroundTint="@color/transparent"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/createComplete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created on dd MMM"
+            android:layout_gravity="center_vertical"
+            android:paddingHorizontal="10sp"
+            android:layout_weight="10"
+            />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

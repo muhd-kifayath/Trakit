@@ -2,6 +2,7 @@ package com.mk.trakit.ui.rooms;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,6 +23,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,8 +44,14 @@ import com.mk.trakit.User;
 import com.mk.trakit.UserTask;
 import com.mk.trakit.databinding.FragmentRoomsBinding;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class RoomsFragment extends Fragment {
@@ -55,6 +65,14 @@ public class RoomsFragment extends Fragment {
     int count;
     FirebaseUser currentUser;
 
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "Your Firebase server key";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
 
     List<Room> dataList;
     RoomAdapter roomAdapter;
@@ -165,6 +183,7 @@ public class RoomsFragment extends Fragment {
                         EditText[] member = new EditText[count];
                         member[0] = dialog.findViewById(R.id.email);
                         Room room = new Room();
+                        String[] memberEmails = new String[count];
                         for(int i=1;i<count;i++){
                             member[i] = dialog.findViewById(201+i);
                         }
@@ -188,12 +207,16 @@ public class RoomsFragment extends Fragment {
                                 DatabaseReference reference = db.getReference().child("Rooms").child(rid);
                                 for (int i=0;i< member.length;i++){
                                     setUser(member[i].getText().toString(),rid);
+                                    memberEmails[i] = member[i].getText().toString();
+
                                 }
+                                sendMail(memberEmails, room_name);
 
                                 reference.setValue(room).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(getContext(), "Room created successfully.", Toast.LENGTH_SHORT).show();
+
                                         dialog.dismiss();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -222,6 +245,29 @@ public class RoomsFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+    private void sendMail(String[] emails, String roomName) {
+        int n = emails.length;
+        String emailsend[] = emails;
+        Log.d("Emails", emails.toString());
+        emailsend = Arrays.copyOfRange(emailsend, 1,n);
+        String emailsubject = "Added to new Room in Trakit";
+        String emailbody = String.format("You have been added to %s, open app to check new tasks!", roomName);
+
+
+        // define Intent object with action attribute as ACTION_SEND
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        // add three fields to intent using putExtra function
+        intent.putExtra(Intent.EXTRA_EMAIL, emailsend);
+        intent.putExtra(Intent.EXTRA_SUBJECT, emailsubject);
+        intent.putExtra(Intent.EXTRA_TEXT, emailbody);
+
+        // set type of intent
+        intent.setType("message/rfc822");
+        startActivity(intent);
     }
 
     private void allRoomRead()

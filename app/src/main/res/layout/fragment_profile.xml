@@ -82,8 +82,7 @@
                 android:layout_width="35sp"
                 android:layout_height="35sp"
                 android:src="@drawable/ic_create"
-                android:layout_gravity="end"
-                app:tint="@color/md_theme_light_primary" />
+                android:layout_gravity="end" />
 
         </LinearLayout>
 
@@ -176,8 +175,7 @@
                 android:layout_width="35sp"
                 android:layout_height="35sp"
                 android:src="@drawable/ic_create"
-                android:layout_gravity="end"
-                app:tint="@color/md_theme_light_primary" />
+                android:layout_gravity="end" />
 
         </LinearLayout>
 

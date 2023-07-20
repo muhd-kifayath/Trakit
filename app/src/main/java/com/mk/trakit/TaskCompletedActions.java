@@ -21,15 +21,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mk.trakit.R;
-import com.mk.trakit.TaskAdapter;
+import com.mk.trakit.TaskCompletedAdapter;
 
 import java.util.List;
 
-public class TaskActions extends ItemTouchHelper.SimpleCallback {
+public class TaskCompletedActions extends ItemTouchHelper.SimpleCallback {
 
-    private TaskAdapter adapter;
+    private TaskCompletedAdapter adapter;
     private List<Task> taskList;
-    public TaskActions(TaskAdapter adapter) {
+    public TaskCompletedActions(TaskCompletedAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
         this.taskList = adapter.taskList;
@@ -155,3 +155,4 @@ public class TaskActions extends ItemTouchHelper.SimpleCallback {
         icon.draw(c);
     }
 }
+
