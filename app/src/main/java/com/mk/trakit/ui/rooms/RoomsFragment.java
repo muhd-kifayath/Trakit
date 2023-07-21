@@ -20,12 +20,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,19 +37,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mk.trakit.R;
 import com.mk.trakit.Room;
+import com.mk.trakit.RoomActions;
 import com.mk.trakit.RoomAdapter;
 import com.mk.trakit.User;
 import com.mk.trakit.UserTask;
 import com.mk.trakit.databinding.FragmentRoomsBinding;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class RoomsFragment extends Fragment {
@@ -60,27 +54,15 @@ public class RoomsFragment extends Fragment {
     FirebaseDatabase db;
     Button create, addmember;
     TextView cancel;
-    private RecyclerView recyclerView;
+    private RecyclerView roomRecycler;
     private List<Room> roomList;
     int count;
     FirebaseUser currentUser;
 
-    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    final private String serverKey = "key=" + "Your Firebase server key";
-    final private String contentType = "application/json";
-    final String TAG = "NOTIFICATION TAG";
-
-    String NOTIFICATION_TITLE;
-    String NOTIFICATION_MESSAGE;
-    String TOPIC;
-
-    List<Room> dataList;
     RoomAdapter roomAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RoomsViewModel roomsViewModel =
-                new ViewModelProvider(this).get(RoomsViewModel.class);
 
         binding = FragmentRoomsBinding.inflate(inflater, container, false);
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
@@ -89,14 +71,19 @@ public class RoomsFragment extends Fragment {
         Dialog dialog = new Dialog(getActivity(),R.style.DialogStyle);
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         count = 1;
-        recyclerView = view.findViewById(R.id.room_list);
+        roomRecycler = view.findViewById(R.id.room_list);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        roomRecycler.setHasFixedSize(true);
+        roomRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         roomList = new ArrayList<>();
         roomAdapter= new RoomAdapter(getContext(),roomList);
-        recyclerView.setAdapter(roomAdapter);
+        roomRecycler.setAdapter(roomAdapter);
+
+        ItemTouchHelper itemTouchHelperPending = new
+                ItemTouchHelper(new RoomActions(roomAdapter));
+        itemTouchHelperPending.attachToRecyclerView(roomRecycler);
+
         allRoomRead();
 
 
@@ -119,12 +106,11 @@ public class RoomsFragment extends Fragment {
 
                 addmember = dialog.findViewById(R.id.addmember);
                 String member1Email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                EditText email1 = dialog.findViewById(R.id.email);
                 if(member1Email!=null) {
-                    EditText email1 = dialog.findViewById(R.id.email);
                     email1.setText(member1Email);
                 }
                 else{
-                    EditText email1 = dialog.findViewById(R.id.email);
                     email1.setFocusable(true);
                 }
 
