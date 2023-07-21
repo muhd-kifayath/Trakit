@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,6 +38,7 @@ public class MessageActivity extends AppCompatActivity {
     ImageButton sendMessage;
     FirebaseUser currentUser;
 
+    private long pressedTime;
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
     private List<Chat> chatList;
@@ -73,6 +75,7 @@ public class MessageActivity extends AppCompatActivity {
         chatAdapter = new ChatAdapter(this,chatList);
         recyclerView.setAdapter(chatAdapter);
 
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Intent intent = getIntent();
@@ -95,6 +98,8 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         readMessages();
+
+        Log.d("Size", "Chat List size: "+chatList.size());
     }
 
     private void addMessageMethod(){
@@ -165,6 +170,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 }
                 chatAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(chatList.size() - 1);
             }
 
             @Override
@@ -174,5 +180,7 @@ public class MessageActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 }

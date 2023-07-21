@@ -31,6 +31,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private long pressedTime;
 
 
     @Override
@@ -66,10 +67,35 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    public void refresh(){
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+    }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        refresh();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            finishAffinity();
+        } else {
+            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        pressedTime = System.currentTimeMillis();
     }
 
     public void signOut() {

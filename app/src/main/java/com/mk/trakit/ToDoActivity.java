@@ -13,9 +13,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -51,6 +55,8 @@ public class ToDoActivity extends AppCompatActivity {
 
     RecyclerView pendingTasks, completedTasks;
     ExtendedFloatingActionButton addTask;
+
+    private long pressedTime;
     Button create;
     TextView cancel;
 
@@ -90,6 +96,8 @@ public class ToDoActivity extends AppCompatActivity {
 
         pendingTasks.setAdapter(pendingTaskAdapter);
         completedTasks.setAdapter(completedTaskAdapter);
+
+        registerForContextMenu(pendingTasks);
 
         ItemTouchHelper itemTouchHelperPending = new
                 ItemTouchHelper(new TaskActions(pendingTaskAdapter));
@@ -176,7 +184,9 @@ public class ToDoActivity extends AppCompatActivity {
                                 Toast.makeText(ToDoActivity.this, "Task Created!", Toast.LENGTH_SHORT).show();
                                 initializeTaskStatus(rid, tid);
 
-                                refresh();
+                                pendingList.add(task);
+                                pendingTaskAdapter.notifyDataSetChanged();
+
                                 dialog.dismiss();
                             }
                         });
@@ -197,7 +207,6 @@ public class ToDoActivity extends AppCompatActivity {
             }
         });
 
-        readTasks();
 
     }
 
@@ -286,6 +295,53 @@ public class ToDoActivity extends AppCompatActivity {
         pendingTaskAdapter.notifyDataSetChanged();
         completedTaskAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        pendingList.clear();
+        completedList.clear();
+        readTasks();
+
+        pendingTaskAdapter.notifyDataSetChanged();
+        completedTaskAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = -1;
+        try {
+            position = ((TaskAdapter) pendingTasks.getAdapter()).getPosition();
+        } catch (Exception e) {
+            Log.d("TAG", e.getLocalizedMessage(), e);
+            return super.onContextItemSelected(item);
+        }
+        if (item.getItemId() == R.id.task_chat) {
+            Task task = pendingList.get(position);
+            String userId = task.getUser_id();
+            if(userId.equals(uid)){
+                Toast.makeText(this, "Why do you want to Chat with yourself? Are you that lonely?", Toast.LENGTH_LONG).show();
+            }
+            else {
+                DatabaseHelper.getUsers().child(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                        intent.putExtra("userId", user.getId());
+                        intent.putExtra("userName", user.getName());
+                        intent.putExtra("userPictureUrl", user.getProfile_pic());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+
+        }
+        return super.onContextItemSelected(item);
+    }
+
+
 
     public void refresh(){
         finish();

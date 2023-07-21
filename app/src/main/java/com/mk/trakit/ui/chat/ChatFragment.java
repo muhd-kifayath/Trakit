@@ -1,6 +1,8 @@
 package com.mk.trakit.ui.chat;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +25,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mk.trakit.Chat;
+import com.mk.trakit.DatabaseHelper;
 import com.mk.trakit.R;
 import com.mk.trakit.User;
 import com.mk.trakit.UserAdapter;
 import com.mk.trakit.databinding.FragmentChatBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChatFragment extends Fragment {
@@ -44,6 +48,7 @@ public class ChatFragment extends Fragment {
     private UserAdapter userAdapter;
     private List<User> userList;
     private String userId, userName, userPictureUrl;
+    EditText search;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class ChatFragment extends Fragment {
         View root = binding.getRoot();
 
         recyclerView = root.findViewById(R.id.recycler_view_searchUser);
+        search = root.findViewById(R.id.search);
         // searchTxtUserArea = (EditText) findViewById(R.id.search_text_area);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         recyclerView.setHasFixedSize(true);
@@ -68,34 +74,51 @@ public class ChatFragment extends Fragment {
 
     private void allUsersRead()
     {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-        userRef.orderByChild("name").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // if(searchTxtUserArea.getText().toString().equals(""))
+        DatabaseReference userRef = DatabaseHelper.getUsers();
 
-                userList.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren())
-                {
-                    User user = snapshot.getValue(User.class);
-                    String id = "";
-                    if (user != null) {
-                        id = user.getId();
-                    }
-                    if(!id.equals(currentUser.getUid())){
-                        Log.d("Verify User", id);
-                        userList.add(user);
-                        Log.d("Room List", userList.toString());
-                    }
-                }
-                userAdapter.notifyDataSetChanged();
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                userRef.orderByChild("name").startAt(charSequence.toString()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        userList.clear();
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            User user = snapshot.getValue(User.class);
+                            String id = "";
+                            if (user != null) {
+                                id = user.getId();
+                            }
+                            if(!id.equals(currentUser.getUid())){
+                                Log.d("Verify User", id);
+                                userList.add(user);
+                                Log.d("Room List", userList.toString());
+                            }
+                        }
+                        userAdapter.notifyDataSetChanged();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
+
     }
 
     @Override
