@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -37,7 +40,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private Context context;
     public List<Task> taskList;
-
+    private int position;
 
     public TaskAdapter(Context mContext, List<Task> taskList) {
         this.context = mContext;
@@ -83,6 +86,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 notifyDataSetChanged();
                 notifyItemRemoved(position);
                 ((ToDoActivity) context).refresh();
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                setPosition(holder.getPosition());
+                return false;
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +152,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         CheckBox task;
         TextView title;
         TextView due;
@@ -151,6 +171,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             task = view.findViewById(R.id.todoCheckbox);
             title = view.findViewById(R.id.todo_title);
             due = view.findViewById(R.id.due_date);
+            view.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            menu.add(Menu.NONE, R.id.task_chat,
+                    Menu.NONE, R.string.Chat);
+        }
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        holder.itemView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
     }
 }

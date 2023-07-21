@@ -15,6 +15,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +54,7 @@ public class TaskActivity extends AppCompatActivity {
     ImageButton delete;
     Dialog dialog;
     Button delete_task;
+    private long pressedTime;
     final String create = "Created on ";
     final String complete = "Completed on ";
 
@@ -77,6 +81,7 @@ public class TaskActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
         createComplete = findViewById(R.id.createComplete);
         delete = findViewById(R.id.delete);
+
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -203,10 +208,12 @@ public class TaskActivity extends AppCompatActivity {
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
-                        duedate.setText(dateFormat.format(calendar.getTime()));
+                        String due = "Due on "+dateFormat.format(calendar.getTime());
+                        duedate.setText(due);
+
                     }
                 };
-                DatePickerDialog datePickerDialog=new DatePickerDialog(getApplicationContext(),R.style.DateTimeDialogTheme,onDateSetListener,calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog datePickerDialog=new DatePickerDialog(TaskActivity.this,R.style.DateTimeDialogTheme,onDateSetListener,calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
                 datePickerDialog.setTitle("Pick Due Date");
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()+86400000);
@@ -217,4 +224,6 @@ public class TaskActivity extends AppCompatActivity {
 
 
     }
+
+
 }
